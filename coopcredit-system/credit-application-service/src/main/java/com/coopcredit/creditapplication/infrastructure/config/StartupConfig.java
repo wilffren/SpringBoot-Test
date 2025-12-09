@@ -43,38 +43,10 @@ public class StartupConfig {
                 "-e GF_SECURITY_ADMIN_USER=admin -e GF_SECURITY_ADMIN_PASSWORD=admin " +
                 "grafana/grafana:latest");
             
-            // Start Risk Central Mock Service
-            startRiskCentralMock(basePath);
-            
             // Wait for MySQL to be ready
             log.info("Waiting for MySQL to be ready...");
-            Thread.sleep(5000);
+            Thread.sleep(3000);
         };
-    }
-    
-    private void startRiskCentralMock(String basePath) {
-        try {
-            // Check if risk-central-mock is already running on port 8081
-            Process checkPort = Runtime.getRuntime().exec(new String[]{"sh", "-c", "lsof -i :8081 | grep LISTEN"});
-            BufferedReader reader = new BufferedReader(new InputStreamReader(checkPort.getInputStream()));
-            String line = reader.readLine();
-            checkPort.waitFor();
-            
-            if (line == null || line.isEmpty()) {
-                log.info("Starting Risk Central Mock Service...");
-                String riskCentralPath = basePath + "/risk-central-mock-service";
-                ProcessBuilder pb = new ProcessBuilder("mvn", "spring-boot:run", "-DskipTests");
-                pb.directory(new java.io.File(riskCentralPath));
-                pb.redirectErrorStream(true);
-                pb.inheritIO();
-                pb.start();
-                Thread.sleep(8000); // Wait for it to start
-            } else {
-                log.info("Risk Central Mock Service already running on port 8081");
-            }
-        } catch (Exception e) {
-            log.warn("Could not start Risk Central Mock Service: {}", e.getMessage());
-        }
     }
 
     private void startContainer(String name, String command) {
