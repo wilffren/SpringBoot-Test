@@ -164,4 +164,4 @@ coopcredit-system/
 
 ## License
 
-This project is proprietary software for CoopCredit cooperative institutions.
+This project is proprietary software for Wilffren Muñoz
