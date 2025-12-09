@@ -1,5 +1,9 @@
 package com.coopcredit.creditapplication.infrastructure.config;
 
+import com.coopcredit.creditapplication.domain.model.User;
+import com.coopcredit.creditapplication.domain.model.enums.UserRole;
+import com.coopcredit.creditapplication.domain.ports.out.UserRepositoryPort;
+import com.coopcredit.creditapplication.infrastructure.security.JwtTokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -8,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -16,6 +21,20 @@ import java.io.InputStreamReader;
 public class StartupConfig {
 
     private static final Logger log = LoggerFactory.getLogger(StartupConfig.class);
+    
+    private final UserRepositoryPort userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
+    
+    private String testToken;
+    
+    public StartupConfig(UserRepositoryPort userRepository, 
+                         PasswordEncoder passwordEncoder,
+                         JwtTokenProvider jwtTokenProvider) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
 
     @Bean
     @Order(1)
@@ -46,7 +65,33 @@ public class StartupConfig {
             // Wait for MySQL to be ready
             log.info("Waiting for MySQL to be ready...");
             Thread.sleep(3000);
+            
+            // Create test user and generate token
+            createTestUserAndToken();
         };
+    }
+    
+    private void createTestUserAndToken() {
+        try {
+            if (!userRepository.existsByUsername("admin")) {
+                User user = User.builder()
+                        .username("admin")
+                        .password(passwordEncoder.encode("admin123"))
+                        .role(UserRole.ROLE_ADMIN)
+                        .enabled(true)
+                        .build();
+                user = userRepository.save(user);
+                testToken = jwtTokenProvider.generateToken(user);
+                log.info("Test user created: admin/admin123");
+            } else {
+                User user = userRepository.findByUsername("admin").orElse(null);
+                if (user != null) {
+                    testToken = jwtTokenProvider.generateToken(user);
+                }
+            }
+        } catch (Exception e) {
+            log.warn("Could not create test user: {}", e.getMessage());
+        }
     }
 
     private void startContainer(String name, String command) {
@@ -77,25 +122,32 @@ public class StartupConfig {
     public void displayEndpoints() {
         String banner = """
             
-            ╔══════════════════════════════════════════════════════════════════════════════════╗
-            ║                       🚀 COOPCREDIT SYSTEM - READY                               ║
-            ╠══════════════════════════════════════════════════════════════════════════════════╣
-            ║                                                                                  ║
-            ║  📚 SWAGGER - CREDIT SERVICE:    http://localhost:8080/swagger-ui.html           ║
-            ║  📋 SWAGGER - RISK CENTRAL:      http://localhost:8081/swagger-ui.html           ║
-            ║  📊 GRAFANA:                     http://localhost:3000  (admin/admin)            ║
-            ║  📈 PROMETHEUS:                  http://localhost:9091                           ║
-            ║                                                                                  ║
-            ╠══════════════════════════════════════════════════════════════════════════════════╣
-            ║  🔐 AUTH (No requiere JWT):                                                      ║
-            ║     POST /api/auth/register  - Registrar usuario                                 ║
-            ║     POST /api/auth/login     - Obtener token JWT                                 ║
-            ║                                                                                  ║
-            ║  🔒 ENDPOINTS PROTEGIDOS (Requieren JWT en header Authorization: Bearer <token>) ║
-            ║     /api/members/**           - Gestión de afiliados                             ║
-            ║     /api/credit-applications/** - Solicitudes de crédito                         ║
-            ╚══════════════════════════════════════════════════════════════════════════════════╝
+            ╔══════════════════════════════════════════════════════════════════════════════════════╗
+            ║                        🚀 COOPCREDIT SYSTEM - READY                                 ║
+            ╠══════════════════════════════════════════════════════════════════════════════════════╣
+            ║                                                                                      ║
+            ║  📚 SWAGGER - CREDIT SERVICE:    http://localhost:8080/swagger-ui.html               ║
+            ║  📋 SWAGGER - RISK CENTRAL:      http://localhost:8081/swagger-ui.html               ║
+            ║  📊 GRAFANA:                     http://localhost:3000  (admin/admin)                ║
+            ║  📈 PROMETHEUS:                  http://localhost:9091                               ║
+            ║                                                                                      ║
+            ╠══════════════════════════════════════════════════════════════════════════════════════╣
+            ║  🔐 AUTH (No JWT required):                                                          ║
+            ║     POST /api/auth/register  - Register new user                                     ║
+            ║     POST /api/auth/login     - Get JWT token                                         ║
+            ║                                                                                      ║
+            ║  🔒 PROTECTED ENDPOINTS (Require JWT in header: Authorization: Bearer <token>)       ║
+            ║     /api/members/**             - Member management                                  ║
+            ║     /api/credit-applications/** - Credit applications                                ║
+            ║                                                                                      ║
+            ╠══════════════════════════════════════════════════════════════════════════════════════╣
+            ║  🔑 TEST CREDENTIALS:  admin / admin123                                              ║
+            ╚══════════════════════════════════════════════════════════════════════════════════════╝
             """;
+        
+        if (testToken != null) {
+            banner += "\n  📋 TEST JWT TOKEN (copy this to Swagger Authorize):\n  Bearer " + testToken + "\n";
+        }
         
         System.out.println(banner);
     }
