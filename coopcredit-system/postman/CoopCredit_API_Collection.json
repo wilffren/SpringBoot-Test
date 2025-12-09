@@ -1,0 +1,375 @@
+{
+    "info": {
+        "name": "CoopCredit System API",
+        "description": "Colección de pruebas para el Sistema Integral de Solicitudes de Crédito",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:8080",
+            "type": "string"
+        },
+        {
+            "key": "riskUrl",
+            "value": "http://localhost:8081",
+            "type": "string"
+        },
+        {
+            "key": "token",
+            "value": "",
+            "type": "string"
+        }
+    ],
+    "item": [
+        {
+            "name": "1. Authentication",
+            "item": [
+                {
+                    "name": "Register User (ADMIN)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"username\": \"admin_test\",\n    \"password\": \"admin123\",\n    \"role\": \"ADMIN\"\n}"
+                        },
+                        "url": "{{baseUrl}}/api/auth/register"
+                    }
+                },
+                {
+                    "name": "Register User (ANALYST)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"username\": \"analyst_test\",\n    \"password\": \"analyst123\",\n    \"role\": \"ANALYST\"\n}"
+                        },
+                        "url": "{{baseUrl}}/api/auth/register"
+                    }
+                },
+                {
+                    "name": "Register User (MEMBER)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"username\": \"member_test\",\n    \"password\": \"member123\",\n    \"role\": \"MEMBER\"\n}"
+                        },
+                        "url": "{{baseUrl}}/api/auth/register"
+                    }
+                },
+                {
+                    "name": "Login (Get JWT Token)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.token) {",
+                                    "    pm.collectionVariables.set('token', jsonData.token);",
+                                    "    console.log('Token saved!');",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"username\": \"admin\",\n    \"password\": \"admin123\"\n}"
+                        },
+                        "url": "{{baseUrl}}/api/auth/login"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "2. Members (Afiliados)",
+            "item": [
+                {
+                    "name": "Create Member",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"document\": \"1234567890\",\n    \"name\": \"Juan Perez\",\n    \"salary\": 5000000,\n    \"affiliationDate\": \"2024-01-15\"\n}"
+                        },
+                        "url": "{{baseUrl}}/api/members"
+                    }
+                },
+                {
+                    "name": "Get Member by ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{baseUrl}}/api/members/1"
+                    }
+                },
+                {
+                    "name": "Get Member by Document",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{baseUrl}}/api/members/document/1234567890"
+                    }
+                },
+                {
+                    "name": "Update Member",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Juan Perez Actualizado\",\n    \"salary\": 6000000,\n    \"status\": \"ACTIVE\"\n}"
+                        },
+                        "url": "{{baseUrl}}/api/members/1"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "3. Credit Applications",
+            "item": [
+                {
+                    "name": "Create Credit Application",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"memberId\": 1,\n    \"requestedAmount\": 10000000,\n    \"termMonths\": 36,\n    \"proposedRate\": 0.12\n}"
+                        },
+                        "url": "{{baseUrl}}/api/credit-applications"
+                    }
+                },
+                {
+                    "name": "Get Credit Application by ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{baseUrl}}/api/credit-applications/1"
+                    }
+                },
+                {
+                    "name": "Evaluate Credit Application",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{baseUrl}}/api/credit-applications/1/evaluate"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "4. Risk Central Mock Service",
+            "item": [
+                {
+                    "name": "Evaluate Risk (Document 1)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"document\": \"1234567890\",\n    \"monto\": 5000000,\n    \"plazo\": 36\n}"
+                        },
+                        "url": "{{riskUrl}}/api/risk/evaluate"
+                    }
+                },
+                {
+                    "name": "Evaluate Risk (Document 2 - Different Score)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"document\": \"9876543210\",\n    \"monto\": 10000000,\n    \"plazo\": 48\n}"
+                        },
+                        "url": "{{riskUrl}}/api/risk/evaluate"
+                    }
+                },
+                {
+                    "name": "Verify Consistency (Same Document = Same Score)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"document\": \"1234567890\",\n    \"monto\": 5000000,\n    \"plazo\": 36\n}"
+                        },
+                        "url": "{{riskUrl}}/api/risk/evaluate"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "5. Actuator (Observability)",
+            "item": [
+                {
+                    "name": "Health Check",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/actuator/health"
+                    }
+                },
+                {
+                    "name": "App Info",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/actuator/info"
+                    }
+                },
+                {
+                    "name": "Prometheus Metrics",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/actuator/prometheus"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "6. Validation Tests",
+            "item": [
+                {
+                    "name": "Create Member - Invalid (No Document)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Invalid User\",\n    \"salary\": 5000000\n}"
+                        },
+                        "url": "{{baseUrl}}/api/members"
+                    }
+                },
+                {
+                    "name": "Create Member - Invalid (Negative Salary)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"document\": \"9999999999\",\n    \"name\": \"Invalid Salary\",\n    \"salary\": -1000\n}"
+                        },
+                        "url": "{{baseUrl}}/api/members"
+                    }
+                },
+                {
+                    "name": "Access Without Token (Should Fail)",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/api/members/1"
+                    }
+                }
+            ]
+        }
+    ]
+}
