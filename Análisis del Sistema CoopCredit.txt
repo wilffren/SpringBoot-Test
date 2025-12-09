@@ -1,0 +1,218 @@
+📋 Análisis del Sistema CoopCredit
+🎯 Microservicios Identificados
+
+credit-application-service (Principal)
+
+Gestión de Afiliados
+Gestión de Solicitudes de Crédito
+Evaluación de Riesgo
+Seguridad JWT completa
+
+
+risk-central-mock-service (Externo Simulado)
+
+Endpoint simple de evaluación de riesgo
+Sin JPA, sin seguridad
+Respuestas determinísticas por documento
+
+
+
+
+🗄️ Diseño de Base de Datos MySQL
+Entidades Identificadas:
+1. users (Para autenticación)
+
+id (PK)
+username
+password (encrypted)
+role (ROLE_AFILIADO, ROLE_ANALISTA, ROLE_ADMIN)
+created_at
+updated_at
+
+2. afiliados
+
+id (PK)
+documento (UNIQUE, NOT NULL)
+nombre (NOT NULL)
+salario (NOT NULL, > 0)
+fecha_afiliacion (NOT NULL)
+estado (ENUM: ACTIVO, INACTIVO)
+user_id (FK → users.id, UNIQUE)
+created_at
+updated_at
+
+3. solicitudes_credito
+
+id (PK)
+afiliado_id (FK → afiliados.id, NOT NULL)
+monto_solicitado (NOT NULL, > 0)
+plazo_meses (NOT NULL, > 0)
+tasa_propuesta (NOT NULL)
+fecha_solicitud (NOT NULL)
+estado (ENUM: PENDIENTE, APROBADO, RECHAZADO)
+created_at
+updated_at
+
+4. evaluaciones_riesgo
+
+id (PK)
+solicitud_id (FK → solicitudes_credito.id, UNIQUE)
+score (300-950)
+nivel_riesgo (ENUM: BAJO, MEDIO, ALTO)
+relacion_cuota_ingreso (DECIMAL)
+cumple_antiguedad (BOOLEAN)
+cumple_monto_maximo (BOOLEAN)
+decision_final (ENUM: APROBADO, RECHAZADO)
+motivo (TEXT)
+detalle_central_riesgo (TEXT)
+created_at
+
+Relaciones:
+
+users 1:1 afiliados
+afiliados 1:N solicitudes_credito
+solicitudes_credito 1:1 evaluaciones_riesgo
+
+
+📐 Arquitectura del Sistema
+Flujo de Arquitectura Hexagonal:
+┌─────────────────────────────────────────────────────────────┐
+│                     DOMAIN LAYER (Core)                      │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
+│  │   Afiliado   │  │  Solicitud   │  │  Evaluacion  │      │
+│  │    (Model)   │  │   (Model)    │  │   (Model)    │      │
+│  └──────────────┘  └──────────────┘  └──────────────┘      │
+│                                                               │
+│  ┌────────────────────────────────────────────────────────┐ │
+│  │              PORTS (Interfaces)                        │ │
+│  │  IN: Use Cases        │  OUT: Repository Ports        │ │
+│  │  - CreateAfiliado     │  - AfiliadoRepositoryPort     │ │
+│  │  - CreateSolicitud    │  - SolicitudRepositoryPort    │ │
+│  │  - EvaluateSolicitud  │  - RiskCentralPort            │ │
+│  └────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────┘
+                              ↕
+┌─────────────────────────────────────────────────────────────┐
+│                   APPLICATION LAYER                          │
+│  ┌────────────────────────────────────────────────────────┐ │
+│  │              Use Cases Implementations                 │ │
+│  │  - CreateAfiliadoUseCaseImpl                          │ │
+│  │  - CreateSolicitudUseCaseImpl                         │ │
+│  │  - EvaluateSolicitudUseCaseImpl (transactional)       │ │
+│  └────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────┘
+                              ↕
+┌─────────────────────────────────────────────────────────────┐
+│                 INFRASTRUCTURE LAYER                         │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
+│  │ REST Adapter │  │  JPA Adapter │  │ HTTP Adapter │      │
+│  │ (Controllers)│  │(Repositories)│  │(Risk Client) │      │
+│  └──────────────┘  └──────────────┘  └──────────────┘      │
+│                                                               │
+│  ┌────────────────────────────────────────────────────────┐ │
+│  │  Security: JWT Filter, Config, UserDetailsService     │ │
+│  │  Config: CORS, OpenAPI, Resilience, Observability     │ │
+│  │  Exception Handling: Global Controller Advice          │ │
+│  └────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────┘
+
+🔧 Configuración Spring Initializr
+Proyecto 1: credit-application-service
+Project Metadata:
+
+Group: com.coopcredit
+Artifact: credit-application-service
+Name: credit-application-service
+Package name: com.coopcredit.creditapplication
+Packaging: Jar
+Java: 21
+Spring Boot: 3.5.0
+
+Dependencies:
+Spring Web
+Spring Data JPA
+MySQL Driver
+Spring Security
+Validation
+Lombok
+Spring Boot Actuator
+Prometheus (Micrometer Registry)
+Spring Boot DevTools
+Proyecto 2: risk-central-mock-service
+Project Metadata:
+
+Group: com.coopcredit
+Artifact: risk-central-mock-service
+Name: risk-central-mock-service
+Package name: com.coopcredit.riskmock
+Packaging: Jar
+Java: 21
+Spring Boot: 3.5.0
+
+Dependencies:
+Spring Web
+Lombok
+Spring Boot Actuator
+Spring Boot DevTools
+
+📁 Script de Estructura Completasetup-project-structure.shCódigo #!/bin/bash
+
+echo "🏗️  Creating CoopCredit Project Structure..."
+
+# Base directory
+BASE_DIR="coopcredit-system"
+mkdir -p $BASE_DIR
+cd $BASE_DIR
+
+# ============================================
+# PROYECTO 1: credit-application-service
+# ==============los artefactos, archivos y carpetas todo en inglessetup-project-structure.shCódigo ∙ Versión 2 #!/bin/bash
+
+echo "🏗️  Creating CoopCredit Project Structure..."
+
+# Base directory
+BASE_DIR="coopcredit-system"
+mkdir -p $BASE_DIR
+cd $BASE_DIR
+
+# ============================================
+# PROJECT 1: credit-application-service
+# ===============Perfect! I've created the complete project structure script in English. Let me provide you with a comprehensive summary:
+📋 Summary - Phase 1 Analysis
+🎯 System Overview: CoopCredit
+Two Microservices:
+
+credit-application-service - Main service with full hexagonal architecture
+risk-central-mock-service - Simple external service simulator
+
+
+🗄️ Database Design (MySQL)
+Tables:
+
+users - Authentication (username, password, role)
+members - Members/Affiliates (document, name, salary, status)
+credit_applications - Credit requests
+risk_evaluations - Risk assessment results
+
+Relationships:
+
+users 1:1 members
+members 1:N credit_applications
+credit_applications 1:1 risk_evaluations
+
+
+
+
+🎯 Next Tasks (Tell me when to proceed):
+Task 1: ✅ Database schema + Flyway migrations
+Task 2: Domain models (Member, CreditApplication, RiskEvaluation)
+Task 3: Ports (Use Cases interfaces + Repository interfaces)
+Task 4: Use Cases implementations
+Task 5: Infrastructure (Entities, Repositories, Adapters)
+Task 6: Security (JWT, Filters, UserDetails)
+Task 7: Controllers + DTOs
+Task 8: Exception handling + Validation
+Task 9: risk-central-mock-service implementation
+Task 10: Testing (Unit + Integration + Testcontainers)
+Task 11: Docker configuration + docker-compose
+Task 12: Documentation + Diagrams
