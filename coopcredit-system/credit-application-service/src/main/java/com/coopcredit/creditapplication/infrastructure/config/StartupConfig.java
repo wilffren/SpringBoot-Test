@@ -128,6 +128,7 @@ public class StartupConfig {
             ║                                                                                      ║
             ║  📚 SWAGGER - CREDIT SERVICE:    http://localhost:8080/swagger-ui.html               ║
             ║  📋 SWAGGER - RISK CENTRAL:      http://localhost:8081/swagger-ui.html               ║
+            ║  🔧 ACTUATOR:                    http://localhost:8080/actuator                      ║
             ║  📊 GRAFANA:                     http://localhost:3000  (admin/admin)                ║
             ║  📈 PROMETHEUS:                  http://localhost:9091                               ║
             ║                                                                                      ║
