@@ -1,0 +1,46 @@
+# Render Blueprint - https://render.com/docs/blueprint-spec
+# Deploy: Connect your GitHub repo to Render and it will auto-detect this file
+
+databases:
+  - name: coopcredit-db
+    databaseName: coopcredit
+    user: coopcredit
+    plan: free
+    region: oregon
+
+services:
+  - type: web
+    name: credit-application-service
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./credit-application-service/Dockerfile
+    dockerContext: ./credit-application-service
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: DB_HOST
+        fromDatabase:
+          name: coopcredit-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: coopcredit-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: coopcredit-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: coopcredit-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: coopcredit-db
+          property: password
+      - key: JWT_SECRET
+        generateValue: true
+      - key: PORT
+        value: 8080
