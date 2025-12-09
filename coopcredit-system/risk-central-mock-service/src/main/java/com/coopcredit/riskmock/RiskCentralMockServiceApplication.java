@@ -10,3 +10,4 @@ public class RiskCentralMockServiceApplication {
         SpringApplication.run(RiskCentralMockServiceApplication.class, args);
     }
 }
+
