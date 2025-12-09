@@ -6,6 +6,9 @@ import com.coopcredit.creditapplication.domain.ports.in.CreateMemberUseCase;
 import com.coopcredit.creditapplication.domain.ports.in.GetMemberUseCase;
 import com.coopcredit.creditapplication.domain.ports.in.UpdateMemberUseCase;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -13,6 +16,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -20,8 +24,12 @@ import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/members")
-@Tag(name = "Members", description = "Member management")
+@Tag(name = "2. Members", description = "Member management - Requires JWT token")
 @SecurityRequirement(name = "bearerAuth")
+@ApiResponses({
+        @ApiResponse(responseCode = "401", description = "Unauthorized - JWT token missing or invalid", content = @Content),
+        @ApiResponse(responseCode = "403", description = "Forbidden - Insufficient permissions", content = @Content)
+})
 public class MemberController {
     
     private final CreateMemberUseCase createMemberUseCase;

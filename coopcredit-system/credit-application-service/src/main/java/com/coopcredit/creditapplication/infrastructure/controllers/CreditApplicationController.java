@@ -5,6 +5,9 @@ import com.coopcredit.creditapplication.domain.model.RiskEvaluation;
 import com.coopcredit.creditapplication.domain.model.enums.ApplicationStatus;
 import com.coopcredit.creditapplication.domain.ports.in.*;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -20,8 +23,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/credit-applications")
-@Tag(name = "Credit Applications", description = "Credit application management")
+@Tag(name = "3. Credit Applications", description = "Credit application management - Requires JWT token")
 @SecurityRequirement(name = "bearerAuth")
+@ApiResponses({
+        @ApiResponse(responseCode = "401", description = "Unauthorized - JWT token missing or invalid", content = @Content),
+        @ApiResponse(responseCode = "403", description = "Forbidden - Insufficient permissions", content = @Content)
+})
 public class CreditApplicationController {
     
     private final CreateCreditApplicationUseCase createCreditApplicationUseCase;
