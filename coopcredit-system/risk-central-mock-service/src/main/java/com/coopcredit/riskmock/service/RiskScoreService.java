@@ -6,14 +6,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.util.Random;
-
 @Service
 public class RiskScoreService {
     
     private static final Logger log = LoggerFactory.getLogger(RiskScoreService.class);
-    private final Random random = new Random();
     
     /**
      * Simulates a risk score calculation based on document and amount.
@@ -22,13 +18,6 @@ public class RiskScoreService {
     public RiskEvaluationResponse evaluateRisk(RiskEvaluationRequest request) {
         log.info("Evaluating risk for document: {}, amount: {}", 
                 request.document(), request.requestedAmount());
-        
-        // Simulate processing delay
-        try {
-            Thread.sleep(random.nextInt(500) + 100);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
         
         // Generate a score based on document characteristics (simulation)
         int score = calculateScore(request.document(), request.requestedAmount());
@@ -40,40 +29,26 @@ public class RiskScoreService {
         return new RiskEvaluationResponse(score, riskLevel, detail);
     }
     
-    private int calculateScore(String document, BigDecimal amount) {
-        // Simulate score calculation
-        // Documents starting with "1" get lower scores (higher risk)
-        // Documents starting with "9" get higher scores (lower risk)
-        int baseScore = 500;
+    private int calculateScore(String document, java.math.BigDecimal amount) {
+        // Use document hash as seed for consistent results per document
+        // Same document will always return the same score
+        int seed = document != null ? Math.abs(document.hashCode()) : 0;
         
-        if (document != null && !document.isEmpty()) {
-            char firstDigit = document.charAt(0);
-            if (Character.isDigit(firstDigit)) {
-                int digit = Character.getNumericValue(firstDigit);
-                baseScore = 400 + (digit * 50);
-            }
-        }
+        // Generate deterministic score based on seed (300-950 range per spec)
+        int baseScore = 300 + (seed % 651); // 651 = 950 - 300 + 1
         
-        // Amount factor: higher amounts slightly reduce score
-        if (amount != null && amount.compareTo(BigDecimal.ZERO) > 0) {
-            if (amount.compareTo(new BigDecimal("10000000")) > 0) {
-                baseScore -= 50;
-            } else if (amount.compareTo(new BigDecimal("5000000")) > 0) {
-                baseScore -= 25;
-            }
-        }
-        
-        // Add some randomness
-        baseScore += random.nextInt(100) - 50;
-        
-        // Ensure score is within valid range
-        return Math.max(300, Math.min(850, baseScore));
+        // Ensure score is within valid range (300-950)
+        return Math.max(300, Math.min(950, baseScore));
     }
     
     private String determineRiskLevel(int score) {
-        if (score >= 700) {
+        // Per specification:
+        // 300–500 → HIGH RISK
+        // 501–700 → MEDIUM RISK  
+        // 701–950 → LOW RISK
+        if (score >= 701) {
             return "LOW";
-        } else if (score >= 550) {
+        } else if (score >= 501) {
             return "MEDIUM";
         } else {
             return "HIGH";
