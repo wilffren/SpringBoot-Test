@@ -7,3 +7,12 @@ datasources:
     url: http://localhost:9091
     isDefault: true
     editable: true
+
+  - name: MySQL
+    type: mysql
+    url: localhost:3307
+    database: coopcredit
+    user: root
+    secureJsonData:
+      password: root
+    editable: true
