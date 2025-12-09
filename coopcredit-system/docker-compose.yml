@@ -2,15 +2,15 @@ services:
   mysql:
     image: mysql:8.0
     container_name: coopcredit-mysql
+    network_mode: host
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: coopcredit
-    ports:
-      - "3307:3306"
+    command: --port=3307
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-P", "3307" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -18,53 +18,25 @@ services:
   prometheus:
     image: prom/prometheus:latest
     container_name: coopcredit-prometheus
-    ports:
-      - "9091:9090"
+    network_mode: host
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--web.listen-address=:9091'
 
   grafana:
     image: grafana/grafana:latest
     container_name: coopcredit-grafana
-    ports:
-      - "3000:3000"
+    network_mode: host
     environment:
       GF_SECURITY_ADMIN_USER: admin
       GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_SERVER_HTTP_PORT: 3000
     volumes:
       - grafana_data:/var/lib/grafana
       - ./grafana_provisioning/datasources:/etc/grafana/provisioning/datasources
       - ./grafana_provisioning/dashboards:/etc/grafana/provisioning/dashboards
-    depends_on:
-      - prometheus
-
-  risk-central-mock:
-    build:
-      context: ./risk-central-mock-service
-      dockerfile: Dockerfile
-    container_name: coopcredit-risk-central
-    ports:
-      - "8081:8081"
-    environment:
-      SERVER_PORT: 8081
-
-  credit-application:
-    build:
-      context: ./credit-application-service
-      dockerfile: Dockerfile
-    container_name: coopcredit-credit-app
-    ports:
-      - "8080:8080"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/coopcredit?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
-      RISK_CENTRAL_URL: http://risk-central-mock:8081
-    depends_on:
-      mysql:
-        condition: service_healthy
-      risk-central-mock:
-        condition: service_started
 
 volumes:
   mysql_data:
