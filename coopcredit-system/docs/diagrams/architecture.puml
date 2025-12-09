@@ -1,0 +1,59 @@
+@startuml hexagonal-architecture
+
+skinparam componentStyle rectangle
+skinparam backgroundColor white
+skinparam shadowing false
+
+title Hexagonal Architecture - CoopCredit System
+
+package "Infrastructure Layer" {
+    [REST Controllers] as controllers
+    [JPA Repositories] as jpaRepos
+    [Risk Central Adapter] as riskAdapter
+    [JWT Security] as security
+    [MapStruct Mappers] as mappers
+}
+
+package "Application Layer" {
+    [Use Cases] as usecases
+}
+
+package "Domain Layer" <<hexagon>> {
+    [Domain Models] as models
+    [Domain Services] as domainServices
+    
+    interface "Input Ports" as inputPorts
+    interface "Output Ports" as outputPorts
+}
+
+package "External Systems" {
+    database "MySQL" as mysql
+    [Risk Central Service] as riskCentral
+}
+
+controllers --> inputPorts : implements
+usecases --> inputPorts
+usecases --> outputPorts : uses
+jpaRepos --> outputPorts : implements
+riskAdapter --> outputPorts : implements
+usecases --> models
+usecases --> domainServices
+jpaRepos --> mysql
+riskAdapter --> riskCentral
+security --> controllers
+
+note right of inputPorts
+  RegisterUserUseCase
+  CreateMemberUseCase
+  CreateCreditApplicationUseCase
+  EvaluateCreditApplicationUseCase
+end note
+
+note right of outputPorts
+  UserRepositoryPort
+  MemberRepositoryPort
+  CreditApplicationRepositoryPort
+  RiskCentralPort
+end note
+
+@enduml

@@ -1,0 +1,59 @@
+# Render Blueprint for CoopCredit System
+# This file defines all services for deployment on Render.com
+# Note: Render free tier uses PostgreSQL, not MySQL
+
+services:
+  # Risk Central Mock Service (simple, no database)
+  - type: web
+    name: risk-central-mock-service
+    runtime: docker
+    dockerfilePath: ./risk-central-mock-service/Dockerfile
+    dockerContext: ./risk-central-mock-service
+    repo: https://github.com/wilffren/SpringBoot-Test.git
+    branch: develop
+    rootDir: coopcredit-system
+    healthCheckPath: /actuator/health
+    plan: free
+    envVars:
+      - key: JAVA_OPTS
+        value: -Xmx256m -Xms128m
+
+  # Credit Application Service (main service with database)
+  - type: web
+    name: credit-application-service
+    runtime: docker
+    dockerfilePath: ./credit-application-service/Dockerfile
+    dockerContext: ./credit-application-service
+    repo: https://github.com/wilffren/SpringBoot-Test.git
+    branch: develop
+    rootDir: coopcredit-system
+    healthCheckPath: /actuator/health
+    plan: free
+    envVars:
+      - key: JAVA_OPTS
+        value: -Xmx512m -Xms256m
+      - key: SPRING_PROFILES_ACTIVE
+        value: render
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: coopcredit-db
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: coopcredit-db
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: coopcredit-db
+          property: password
+      - key: RISK_CENTRAL_URL
+        fromService:
+          name: risk-central-mock-service
+          type: web
+          property: hostport
+
+databases:
+  - name: coopcredit-db
+    databaseName: coopcredit
+    plan: free
+    postgresMajorVersion: "15"

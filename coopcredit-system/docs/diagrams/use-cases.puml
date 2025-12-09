@@ -1,0 +1,53 @@
+@startuml use-cases
+
+skinparam backgroundColor white
+skinparam actorStyle awesome
+
+title CoopCredit System - Use Cases
+
+left to right direction
+
+actor "Member" as member
+actor "Analyst" as analyst
+actor "Admin" as admin
+
+rectangle "CoopCredit System" {
+    usecase "Register" as UC1
+    usecase "Login" as UC2
+    usecase "View Profile" as UC3
+    usecase "Submit Credit Application" as UC4
+    usecase "View Application Status" as UC5
+    
+    usecase "Create Member" as UC6
+    usecase "Update Member" as UC7
+    usecase "View All Members" as UC8
+    usecase "Evaluate Credit Application" as UC9
+    usecase "View All Applications" as UC10
+    
+    usecase "Manage Users" as UC11
+    usecase "View System Metrics" as UC12
+}
+
+member --> UC1
+member --> UC2
+member --> UC3
+member --> UC4
+member --> UC5
+
+analyst --> UC2
+analyst --> UC6
+analyst --> UC7
+analyst --> UC8
+analyst --> UC9
+analyst --> UC10
+
+admin --> UC2
+admin --> UC6
+admin --> UC7
+admin --> UC8
+admin --> UC9
+admin --> UC10
+admin --> UC11
+admin --> UC12
+
+@enduml
