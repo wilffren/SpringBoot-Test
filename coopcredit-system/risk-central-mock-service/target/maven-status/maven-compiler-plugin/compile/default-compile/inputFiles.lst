@@ -1,4 +1,5 @@
 /home/Coder/Imágenes/SpringBoot-Test/coopcredit-system/risk-central-mock-service/src/main/java/com/coopcredit/riskmock/RiskCentralMockServiceApplication.java
+/home/Coder/Imágenes/SpringBoot-Test/coopcredit-system/risk-central-mock-service/src/main/java/com/coopcredit/riskmock/config/OpenApiConfig.java
 /home/Coder/Imágenes/SpringBoot-Test/coopcredit-system/risk-central-mock-service/src/main/java/com/coopcredit/riskmock/controller/RiskEvaluationController.java
 /home/Coder/Imágenes/SpringBoot-Test/coopcredit-system/risk-central-mock-service/src/main/java/com/coopcredit/riskmock/dto/RiskEvaluationRequest.java
 /home/Coder/Imágenes/SpringBoot-Test/coopcredit-system/risk-central-mock-service/src/main/java/com/coopcredit/riskmock/dto/RiskEvaluationResponse.java

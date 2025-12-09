@@ -78,6 +78,7 @@ com/coopcredit/creditapplication/domain/model/RiskEvaluation.class
 com/coopcredit/creditapplication/application/usecases/auth/AuthenticateUserUseCaseImpl.class
 com/coopcredit/creditapplication/domain/ports/in/UpdateMemberUseCase.class
 com/coopcredit/creditapplication/infrastructure/mappers/CreditApplicationMapper.class
+com/coopcredit/creditapplication/infrastructure/config/StartupConfig.class
 com/coopcredit/creditapplication/CreditApplicationServiceApplication.class
 com/coopcredit/creditapplication/infrastructure/adapters/persistence/RiskEvaluationRepositoryAdapter.class
 com/coopcredit/creditapplication/infrastructure/repositories/JpaRiskEvaluationRepository.class

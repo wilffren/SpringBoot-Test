@@ -29,9 +29,16 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
+                // Public endpoints
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/actuator/**").permitAll()
-                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                // Swagger UI
+                .requestMatchers("/swagger-ui.html").permitAll()
+                .requestMatchers("/swagger-ui/**").permitAll()
+                .requestMatchers("/v3/api-docs/**").permitAll()
+                .requestMatchers("/swagger-resources/**").permitAll()
+                .requestMatchers("/webjars/**").permitAll()
+                // Protected endpoints
                 .requestMatchers("/api/members/**").hasAnyRole("MEMBER", "ANALYST", "ADMIN")
                 .requestMatchers("/api/credit-applications/**").hasAnyRole("MEMBER", "ANALYST", "ADMIN")
                 .requestMatchers("/api/evaluations/**").hasAnyRole("ANALYST", "ADMIN")

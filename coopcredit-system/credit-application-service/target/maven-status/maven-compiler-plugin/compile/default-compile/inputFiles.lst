@@ -3,6 +3,7 @@
 /home/Coder/Imágenes/SpringBoot-Test/coopcredit-system/credit-application-service/src/main/java/com/coopcredit/creditapplication/domain/exception/NotFoundException.java
 /home/Coder/Imágenes/SpringBoot-Test/coopcredit-system/credit-application-service/src/main/java/com/coopcredit/creditapplication/domain/ports/in/CreateCreditApplicationUseCase.java
 /home/Coder/Imágenes/SpringBoot-Test/coopcredit-system/credit-application-service/src/main/java/com/coopcredit/creditapplication/domain/ports/out/CreditApplicationRepositoryPort.java
+/home/Coder/Imágenes/SpringBoot-Test/coopcredit-system/credit-application-service/src/main/java/com/coopcredit/creditapplication/infrastructure/config/StartupConfig.java
 /home/Coder/Imágenes/SpringBoot-Test/coopcredit-system/credit-application-service/src/main/java/com/coopcredit/creditapplication/domain/ports/in/GetCreditApplicationUseCase.java
 /home/Coder/Imágenes/SpringBoot-Test/coopcredit-system/credit-application-service/src/main/java/com/coopcredit/creditapplication/CreditApplicationServiceApplication.java
 /home/Coder/Imágenes/SpringBoot-Test/coopcredit-system/credit-application-service/src/main/java/com/coopcredit/creditapplication/infrastructure/security/JwtService.java
