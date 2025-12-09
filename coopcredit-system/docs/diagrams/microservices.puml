@@ -1,0 +1,65 @@
+@startuml microservices
+
+skinparam backgroundColor white
+skinparam componentStyle rectangle
+
+title CoopCredit System - Microservices Architecture
+
+actor "Client" as client
+
+node "API Gateway" {
+    [Swagger UI] as swagger
+}
+
+node "Credit Application Service\n:8080" as creditService {
+    component "Auth Controller" as authCtrl
+    component "Member Controller" as memberCtrl
+    component "Credit Controller" as creditCtrl
+    component "JWT Filter" as jwtFilter
+    database "Business Logic" as logic
+}
+
+node "Risk Central Mock Service\n:8081" as riskService {
+    component "Risk Controller" as riskCtrl
+    component "Risk Evaluator" as riskEval
+}
+
+node "Infrastructure" {
+    database "MySQL\n:3307" as mysql
+    component "Prometheus\n:9091" as prometheus
+    component "Grafana\n:3000" as grafana
+}
+
+client --> swagger : HTTP
+swagger --> jwtFilter
+jwtFilter --> authCtrl
+jwtFilter --> memberCtrl
+jwtFilter --> creditCtrl
+
+authCtrl --> logic
+memberCtrl --> logic
+creditCtrl --> logic
+
+logic --> mysql : JPA/Hibernate
+creditCtrl --> riskCtrl : REST/HTTP
+
+riskCtrl --> riskEval
+
+creditService --> prometheus : metrics
+prometheus --> grafana
+
+note right of creditService
+    Main microservice handling:
+    - User authentication
+    - Member management
+    - Credit applications
+    - Risk evaluation orchestration
+end note
+
+note right of riskService
+    Mock service simulating
+    external risk central
+    for credit scoring
+end note
+
+@enduml

@@ -441,6 +441,28 @@ coopcredit-system/
 
 ---
 
+## Diagrams
+
+PlantUML diagrams are located in `docs/diagrams/`:
+
+| Diagram | File | Description |
+|---------|------|-------------|
+| Hexagonal Architecture | architecture.puml | Shows ports, adapters, and layer separation |
+| Use Cases | use-cases.puml | Actor interactions with system features |
+| Microservices | microservices.puml | Service communication and infrastructure |
+
+To generate images from PlantUML files:
+
+```bash
+# Using PlantUML CLI
+java -jar plantuml.jar docs/diagrams/*.puml
+
+# Using online renderer
+# Visit https://www.plantuml.com/plantuml/uml/
+```
+
+---
+
 ## License
 
 Proprietary software for Wilffren Muñoz

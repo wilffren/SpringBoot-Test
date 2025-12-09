@@ -36,6 +36,34 @@ services:
     depends_on:
       - prometheus
 
+  risk-central-mock:
+    build:
+      context: ./risk-central-mock-service
+      dockerfile: Dockerfile
+    container_name: coopcredit-risk-central
+    ports:
+      - "8081:8081"
+    environment:
+      SERVER_PORT: 8081
+
+  credit-application:
+    build:
+      context: ./credit-application-service
+      dockerfile: Dockerfile
+    container_name: coopcredit-credit-app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/coopcredit?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      RISK_CENTRAL_URL: http://risk-central-mock:8081
+    depends_on:
+      mysql:
+        condition: service_healthy
+      risk-central-mock:
+        condition: service_started
+
 volumes:
   mysql_data:
   grafana_data:
