@@ -14,8 +14,9 @@ services:
     runtime: docker
     plan: free
     region: oregon
-    dockerfilePath: ./credit-application-service/Dockerfile
-    dockerContext: ./credit-application-service
+    rootDir: coopcredit-system/credit-application-service
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
     healthCheckPath: /actuator/health
     envVars:
       - key: SPRING_PROFILES_ACTIVE
