@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: coopcredit-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: coopcredit
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - coopcredit-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  risk-central-mock:
+    build:
+      context: ./risk-central-mock-service
+      dockerfile: Dockerfile
+    container_name: risk-central-mock
+    ports:
+      - "8081:8081"
+    networks:
+      - coopcredit-network
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  credit-application:
+    build:
+      context: ./credit-application-service
+      dockerfile: Dockerfile
+    container_name: credit-application
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/coopcredit?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      RISK_CENTRAL_BASE_URL: http://risk-central-mock:8081
+    networks:
+      - coopcredit-network
+    depends_on:
+      mysql:
+        condition: service_healthy
+      risk-central-mock:
+        condition: service_started
+
+networks:
+  coopcredit-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
