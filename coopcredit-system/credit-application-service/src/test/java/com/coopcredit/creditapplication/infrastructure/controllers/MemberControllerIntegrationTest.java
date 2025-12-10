@@ -106,7 +106,7 @@ class MemberControllerIntegrationTest {
         mockMvc.perform(post("/api/members")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized()); // 401 cuando no hay token
     }
 
     @Test
