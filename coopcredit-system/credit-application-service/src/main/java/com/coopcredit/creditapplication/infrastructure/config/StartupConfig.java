@@ -146,9 +146,7 @@ public class StartupConfig {
             ╚══════════════════════════════════════════════════════════════════════════════════════╝
             """;
         
-        if (testToken != null) {
-            banner += "\n  📋 TEST JWT TOKEN (copy this to Swagger Authorize):\n  Bearer " + testToken + "\n";
-        }
+        
         
         System.out.println(banner);
     }
