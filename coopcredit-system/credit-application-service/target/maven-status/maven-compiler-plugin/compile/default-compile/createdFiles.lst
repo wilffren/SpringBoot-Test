@@ -29,6 +29,7 @@ com/coopcredit/creditapplication/infrastructure/controllers/AuthController$Regis
 com/coopcredit/creditapplication/infrastructure/controllers/CreditApplicationController$CreateApplicationRequest.class
 com/coopcredit/creditapplication/infrastructure/repositories/JpaUserRepository.class
 com/coopcredit/creditapplication/infrastructure/entities/CreditApplicationEntity.class
+com/coopcredit/creditapplication/application/usecases/member/DeleteMemberUseCaseImpl.class
 com/coopcredit/creditapplication/infrastructure/controllers/AuthController.class
 com/coopcredit/creditapplication/domain/exception/UnauthorizedException.class
 com/coopcredit/creditapplication/infrastructure/config/OpenApiConfig.class
@@ -74,6 +75,7 @@ com/coopcredit/creditapplication/infrastructure/config/SecurityConfig.class
 com/coopcredit/creditapplication/infrastructure/entities/UserEntity.class
 com/coopcredit/creditapplication/domain/ports/in/CreateCreditApplicationUseCase$CreateCreditApplicationCommand.class
 com/coopcredit/creditapplication/infrastructure/config/GlobalExceptionHandler.class
+com/coopcredit/creditapplication/domain/ports/in/DeleteMemberUseCase.class
 com/coopcredit/creditapplication/domain/model/RiskEvaluation.class
 com/coopcredit/creditapplication/application/usecases/auth/AuthenticateUserUseCaseImpl.class
 com/coopcredit/creditapplication/domain/ports/in/UpdateMemberUseCase.class

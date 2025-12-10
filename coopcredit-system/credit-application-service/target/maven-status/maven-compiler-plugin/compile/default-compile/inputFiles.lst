@@ -59,6 +59,7 @@
 /home/Coder/Imágenes/SpringBoot-Test/coopcredit-system/credit-application-service/src/main/java/com/coopcredit/creditapplication/domain/model/enums/RiskLevel.java
 /home/Coder/Imágenes/SpringBoot-Test/coopcredit-system/credit-application-service/src/main/java/com/coopcredit/creditapplication/infrastructure/config/SecurityConfig.java
 /home/Coder/Imágenes/SpringBoot-Test/coopcredit-system/credit-application-service/src/main/java/com/coopcredit/creditapplication/application/usecases/credit/CreateCreditApplicationUseCaseImpl.java
+/home/Coder/Imágenes/SpringBoot-Test/coopcredit-system/credit-application-service/src/main/java/com/coopcredit/creditapplication/application/usecases/member/DeleteMemberUseCaseImpl.java
 /home/Coder/Imágenes/SpringBoot-Test/coopcredit-system/credit-application-service/src/main/java/com/coopcredit/creditapplication/infrastructure/web/dto/member/UpdateMemberRequest.java
 /home/Coder/Imágenes/SpringBoot-Test/coopcredit-system/credit-application-service/src/main/java/com/coopcredit/creditapplication/infrastructure/controllers/MemberController.java
 /home/Coder/Imágenes/SpringBoot-Test/coopcredit-system/credit-application-service/src/main/java/com/coopcredit/creditapplication/infrastructure/web/dto/credit/CreditApplicationResponse.java
@@ -70,6 +71,7 @@
 /home/Coder/Imágenes/SpringBoot-Test/coopcredit-system/credit-application-service/src/main/java/com/coopcredit/creditapplication/domain/model/enums/FinalDecision.java
 /home/Coder/Imágenes/SpringBoot-Test/coopcredit-system/credit-application-service/src/main/java/com/coopcredit/creditapplication/domain/model/enums/UserRole.java
 /home/Coder/Imágenes/SpringBoot-Test/coopcredit-system/credit-application-service/src/main/java/com/coopcredit/creditapplication/infrastructure/security/CustomUserDetailsService.java
+/home/Coder/Imágenes/SpringBoot-Test/coopcredit-system/credit-application-service/src/main/java/com/coopcredit/creditapplication/domain/ports/in/DeleteMemberUseCase.java
 /home/Coder/Imágenes/SpringBoot-Test/coopcredit-system/credit-application-service/src/main/java/com/coopcredit/creditapplication/infrastructure/config/BeanConfig.java
 /home/Coder/Imágenes/SpringBoot-Test/coopcredit-system/credit-application-service/src/main/java/com/coopcredit/creditapplication/infrastructure/web/advice/GlobalExceptionHandler.java
 /home/Coder/Imágenes/SpringBoot-Test/coopcredit-system/credit-application-service/src/main/java/com/coopcredit/creditapplication/domain/ports/out/RiskCentralPort.java

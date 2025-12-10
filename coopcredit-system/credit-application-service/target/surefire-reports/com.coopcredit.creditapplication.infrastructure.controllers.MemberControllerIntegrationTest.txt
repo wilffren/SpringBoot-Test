@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.coopcredit.creditapplication.infrastructure.controllers.MemberControllerIntegrationTest
--------------------------------------------------------------------------------
-Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 11.692 s - in com.coopcredit.creditapplication.infrastructure.controllers.MemberControllerIntegrationTest
